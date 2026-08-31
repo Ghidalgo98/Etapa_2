@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.37203.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Etapa_1", "Etapa_1.csproj", "{23F9A80A-731A-42C5-9838-3198D738AC92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Etapa_2", "Etapa_2.csproj", "{23F9A80A-731A-42C5-9838-3198D738AC92}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Capa_Datos", "..\Capa_Datos\Capa_Datos.csproj", "{B4A7F198-C7E1-47BD-BBD0-AFC951350A02}"
 EndProject
