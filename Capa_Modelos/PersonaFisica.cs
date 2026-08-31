@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
 namespace Capa_Modelos;
 
 public partial class PersonaFisica

@@ -1,0 +1,359 @@
+﻿@model IEnumerable<Capa_Modelos.PersonaFisica>
+
+@{
+    Layout = "Layout_Home";
+    ViewData["Title"] = "Personas Físicas";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+
+        <div class="row mb-2">
+
+            <div class="col-sm-6">
+                <h1 class="m-0">Personas Físicas</h1>
+            </div>
+
+            <div class="col-sm-6 text-right">
+
+                <button type="button"
+                        class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalPersona">
+
+                    <i class="fas fa-plus"></i>
+                    Nueva Persona
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<section class="content">
+
+    <div class="container-fluid">
+
+        <div class="card card-primary card-outline">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    Listado de Personas Físicas
+                </h3>
+            </div>
+
+            <div class="card-body">
+
+                <table id="tablaPersonas"
+                       class="table table-bordered table-striped table-hover">
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre Completo</th>
+                            <th>Fecha Nacimiento</th>
+                            <th>Sexo</th>
+                            <th>Nacionalidad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>@item.Id</td>
+
+                                <td>
+                                    @item.Nombre
+                                    @item.Apellido1
+                                    @item.Apellido2
+                                </td>
+
+                                <td>
+                                    @item.FechaNacimiento.ToString("dd/MM/yyyy")
+                                </td>
+
+                                <td>
+                                    @item.SexoNavigation.DescripcionSexoPersona
+                                </td>
+
+                                <td>
+                                    @item.NacionalidadNavigation.DescripcionNacionalidad
+                                </td>
+
+                                <td>
+
+                                    @if (item.Estado)
+                                    {
+                                        <span class="badge bg-success">
+                                            Activo
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            Inactivo
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    <button class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+
+                                    <button class="btn btn-danger btn-sm btnEliminar"
+                                            data-id="@item.Id">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MODAL -->
+
+<div class="modal fade"
+     id="modalPersona"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary">
+
+                <h5 class="modal-title">
+                    Persona Física
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden"
+                       id="Id"
+                       value="0" />
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Nombre
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="Nombre" />
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Primer Apellido
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="Apellido1" />
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Segundo Apellido
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="Apellido2" />
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+                        
+
+                        
+                        <label class="form-label">
+                            
+                            Fecha Nacimiento
+                            
+                        </label>
+                        
+
+                       
+                        <input type="date"
+                               
+                               class="form-control"
+                               
+                               id="FechaNacimiento"
+                               
+                               max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                       
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Sexo
+                        </label>
+
+                        <select class="form-control select2"
+                                id="Sexo">
+
+                            <option value="">
+                                Seleccione...
+                            </option>
+
+                            <option value="1">
+                                Masculino
+                            </option>
+
+                            <option value="2">
+                                Femenino
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Nacionalidad
+                        </label>
+
+                        <select class="form-control select2"
+                                id="Nacionalidad">
+
+                            <option value="">
+                                Seleccione...
+                            </option>
+
+                            <option value="1">
+                                Costa Rica
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">
+                            Tipo Persona
+                        </label>
+
+                        <select class="form-control select2"
+                                id="TipoPersona">
+
+                            <option value="">
+                                Seleccione...
+                            </option>
+
+                            <option value="1">
+                                Cliente
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4 mt-4">
+
+                        <div class="form-check form-switch">
+
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="Estado"
+                                   checked />
+
+                            <label class="form-check-label"
+                                   for="Estado">
+
+                                Activo
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-success"
+                        id="btnGuardar">
+
+                    <i class="fas fa-save"></i>
+                    Guardar
+
+                </button>
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    Cerrar
+
+                </button>
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+@section Scripts
+{
+    <script src="~/js/Persona_Fisica.js"></script>
+}

@@ -15,13 +15,13 @@
     <link rel="stylesheet" href="~/AdminLTE/plugins/FontAwesome/css/all.min.css" />
 
     <!-- DataTables -->
-    <link rel="stylesheet" href="~/AdminLTE/plugins/DataTables/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="~/AdminLTE/plugins/DataTables/dataTables.bootstrap5.min.css" />
 
     <!-- Select2 -->
     <link rel="stylesheet" href="~/AdminLTE/plugins/Select2/select2.min.css" />
 
     <!-- SweetAlert2 (tema Bootstrap4) -->
-    <link rel="stylesheet" href="~/AdminLTE/plugins/SweetAlert2/bootstrap-4.min.css" />
+    <link rel="stylesheet" href="~/AdminLTE/plugins/SweetAlert2/sweetalert2.min.css" />
 
     <!-- Estilos propios -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -144,13 +144,13 @@
     </div>
 
     <!-- 🔹 Scripts locales -->
-    <script src="~/AdminLTE/plugins/jquery/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/AdminLTE/dist/js/adminlte.min.js"></script>
 
     <!-- DataTables -->
-    <script src="~/AdminLTE/plugins/DataTables/jquery.dataTables.min.js"></script>
-    <script src="~/AdminLTE/plugins/DataTables/dataTables.bootstrap4.min.js"></script>
+    <script src="~/AdminLTE/plugins/DataTables/dataTables.min.js"></script>
+    <script src="~/AdminLTE/plugins/DataTables/dataTables.bootstrap5.min.js"></script>
 
     <!-- Chart.js -->
     <script src="~/AdminLTE/plugins/Chartjs/chart.min.js"></script>
@@ -172,11 +172,20 @@
                 day: '2-digit', month: '2-digit', year: 'numeric',
                 hour: '2-digit', minute: '2-digit'
             };
-            document.getElementById("fechaHora").textContent =
-                ahora.toLocaleString("es-CR", opciones);
+                    const fechaHora =
+        
+        document.getElementById("fechaHora");
+          
+        if (fechaHora) {
+        
+        fechaHora.textContent =
+        
+        ahora.toLocaleString("es-CR", opciones);
         }
         setInterval(actualizarFechaHora, 1000);
         actualizarFechaHora();
+        
+        }
     </script>
 </body>
 </html>
