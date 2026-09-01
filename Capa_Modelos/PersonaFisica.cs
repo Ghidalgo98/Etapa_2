@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace Capa_Modelos;
@@ -7,6 +8,9 @@ namespace Capa_Modelos;
 public partial class PersonaFisica
 {
     public long Id { get; set; }
+
+    [NotMapped]
+    public int? IdOriginal { get; set; }
 
     public int Tipo { get; set; }
 

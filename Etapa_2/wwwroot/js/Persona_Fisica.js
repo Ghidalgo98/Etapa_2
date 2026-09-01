@@ -39,7 +39,8 @@ function iniciarSelect2() {
 
 function guardarPersona() {
 
-    
+    console.log("Id:", $("#Id").val());
+    console.log("IdOriginal:", $("#IdOriginal").val());
     if ($("#Nombre").val().trim() === "") {
 
         Swal.fire({
@@ -76,7 +77,7 @@ function guardarPersona() {
     let persona = {
 
         Id: $("#Id").val() || 0,
-
+        IdOriginal: $("#IdOriginal").val(),
         Nombre: $("#Nombre").val(),
         Apellido1: $("#Apellido1").val(),
         Apellido2: $("#Apellido2").val(),
@@ -162,9 +163,7 @@ function editarPersona() {
                 let p = response.data;
 
                 $("#Id").val(p.id);
-                console.log(p);
-                console.log("p.id =", p.id);
-                console.log("p.Id =", p.Id);
+                $("#IdOriginal").val(p.id);
                 $("#Nombre").val(p.nombre);
                 $("#Apellido1").val(p.apellido1);
                 $("#Apellido2").val(p.apellido2);

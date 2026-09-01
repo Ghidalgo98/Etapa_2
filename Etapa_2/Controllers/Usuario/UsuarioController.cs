@@ -40,7 +40,8 @@ namespace Usuario.Controllers
         [HttpPost]
         public async Task<IActionResult> Guardar(PersonaFisica model)
         {
-
+            Console.WriteLine($"ID nuevo: {model.Id}");
+            Console.WriteLine($"ID original: {model.IdOriginal}");
             Console.WriteLine($"ID recibido: {model.Id}");
             ModelState.Remove("SexoNavigation");
             
@@ -63,7 +64,7 @@ namespace Usuario.Controllers
                     
                 }
                 var personaExiste = await _context.PersonaFisicas
-    .FirstOrDefaultAsync(x => x.Id == model.Id);
+    .FirstOrDefaultAsync(x => x.Id == model.IdOriginal);
 
                 if (personaExiste == null)
                 {
@@ -71,6 +72,7 @@ namespace Usuario.Controllers
                 }
                 else
                 {
+                    personaExiste.Id = model.Id;
                     personaExiste.Nombre = model.Nombre;
                     personaExiste.Apellido1 = model.Apellido1;
                     personaExiste.Apellido2 = model.Apellido2;
