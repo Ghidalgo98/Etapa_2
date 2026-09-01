@@ -34,44 +34,14 @@ namespace Usuario.Controllers
             }
         }
 
-        // GET: Usuario/Obtener/5
-        [HttpGet]
-        public async Task<IActionResult> Obtener(long id)
-        {
-            try
-            {
-                var persona = await _context.PersonaFisicas
-                    .FirstOrDefaultAsync(x => x.Id == id);
-
-                if (persona == null)
-                {
-                    return Json(new
-                    {
-                        success = false,
-                        message = "Registro no encontrado."
-                    });
-                }
-
-                return Json(new
-                {
-                    success = true,
-                    data = persona
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = ex.Message
-                });
-            }
-        }
+        
 
         // POST: Usuario/Guardar
         [HttpPost]
         public async Task<IActionResult> Guardar(PersonaFisica model)
         {
+
+            Console.WriteLine($"ID recibido: {model.Id}");
             ModelState.Remove("SexoNavigation");
             
             ModelState.Remove("TipoNavigation");
@@ -92,25 +62,15 @@ namespace Usuario.Controllers
                     });
                     
                 }
+                var personaExiste = await _context.PersonaFisicas
+    .FirstOrDefaultAsync(x => x.Id == model.Id);
 
-                if (model.Id == 0)
+                if (personaExiste == null)
                 {
                     _context.PersonaFisicas.Add(model);
                 }
                 else
                 {
-                    var personaExiste = await _context.PersonaFisicas
-                        .FirstOrDefaultAsync(x => x.Id == model.Id);
-
-                    if (personaExiste == null)
-                    {
-                        return Json(new
-                        {
-                            success = false,
-                            message = "El registro no existe."
-                        });
-                    }
-
                     personaExiste.Nombre = model.Nombre;
                     personaExiste.Apellido1 = model.Apellido1;
                     personaExiste.Apellido2 = model.Apellido2;
@@ -121,6 +81,7 @@ namespace Usuario.Controllers
                     personaExiste.Estado = model.Estado;
                 }
 
+
                 var resultado = await _context.SaveChangesAsync();
 
                 if (resultado > 0)
@@ -128,7 +89,7 @@ namespace Usuario.Controllers
                     return Json(new
                     {
                         success = true,
-                        message = model.Id == 0
+                        message = personaExiste==null
                             ? "Persona registrada correctamente."
                             : "Persona actualizada correctamente."
                     });
@@ -146,6 +107,39 @@ namespace Usuario.Controllers
                 {
                     success = false,
                     message = ex.InnerException?.Message ?? ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Obtener(int id)
+        {
+            try
+            {
+                var persona = await _context.PersonaFisicas
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                if (persona == null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Persona no encontrada."
+                    });
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = persona
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.ToString()
                 });
             }
         }
@@ -180,5 +174,8 @@ namespace Usuario.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
+
+
     }
 }

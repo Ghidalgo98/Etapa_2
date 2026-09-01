@@ -109,8 +109,9 @@
 
                                 <td>
 
-                                    <button class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i>
+                                    <button class="btn btn-warning btn-sm btnEditar"
+                                             data-id="@item.Id">
+                                         <i class="fas fa-edit"></i>
                                     </button>
 
                                     <button class="btn btn-danger btn-sm btnEliminar"
@@ -161,10 +162,17 @@
             </div>
 
             <div class="modal-body">
+                <input type="hidden" id="EsEdicion" value="0" />
 
-                <input type="hidden"
-                       id="Id"
-                       value="0" />
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">
+                        Cédula
+                    </label>
+
+                    <input type="number"
+                           class="form-control"
+                           id="Id" />
+                </div>
 
                 <div class="row">
 

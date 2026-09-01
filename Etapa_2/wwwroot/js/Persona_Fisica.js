@@ -3,8 +3,18 @@
     iniciarDataTable();
     iniciarSelect2();
 
+    $("#btnNuevaPersona").on("click", function () {
+        $("#Id").val("");
+        limpiarFormulario();
+        $("#modalPersona").modal("show");
+   
+        $("#modalPersona").modal("show");
+        
+    });
+
     $("#btnGuardar").on("click", guardarPersona);
 
+    $(document).on("click", ".btnEditar", editarPersona);
     $(document).on("click", ".btnEliminar", eliminarPersona);
 
 });
@@ -29,6 +39,7 @@ function iniciarSelect2() {
 
 function guardarPersona() {
 
+    
     if ($("#Nombre").val().trim() === "") {
 
         Swal.fire({
@@ -79,7 +90,7 @@ function guardarPersona() {
         Estado: $("#Estado").is(":checked")
 
     };
-
+    console.log("Valor del input oculto:", $("#Id").val());
     console.log(persona);
 
     $.ajax({
@@ -135,6 +146,54 @@ function guardarPersona() {
 
 }
 
+function editarPersona() {
+
+    let id = $(this).data("id");
+
+    $.ajax({
+        url: "/Usuario/Obtener",
+        type: "GET",
+        data: { id: id },
+
+        success: function (response) {
+
+            if (response.success) {
+
+                let p = response.data;
+
+                $("#Id").val(p.id);
+                console.log(p);
+                console.log("p.id =", p.id);
+                console.log("p.Id =", p.Id);
+                $("#Nombre").val(p.nombre);
+                $("#Apellido1").val(p.apellido1);
+                $("#Apellido2").val(p.apellido2);
+
+                $("#FechaNacimiento").val(
+                    p.fechaNacimiento.split('T')[0]
+                );
+
+                $("#Sexo").val(p.sexo).trigger("change");
+                $("#Nacionalidad").val(p.nacionalidad).trigger("change");
+                $("#TipoPersona").val(p.tipo).trigger("change");
+
+                $("#Estado").prop("checked", p.estado);
+
+                $("#modalPersona").modal("show");
+            }
+            else {
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: response.message
+                });
+            }
+        }
+    });
+}
+
+
 function eliminarPersona() {
 
     let id = $(this).data("id");
@@ -156,4 +215,20 @@ function eliminarPersona() {
 
     });
 
+}
+function limpiarFormulario() {
+
+    $("#Id").val("");
+
+    $("#Nombre").val("");
+    $("#Apellido1").val("");
+    $("#Apellido2").val("");
+
+    $("#FechaNacimiento").val("");
+
+    $("#Sexo").val("").trigger("change");
+    $("#Nacionalidad").val("").trigger("change");
+    $("#TipoPersona").val("").trigger("change");
+
+    $("#Estado").prop("checked", true);
 }
