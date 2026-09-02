@@ -76,7 +76,7 @@ function guardarPersona() {
 
     let persona = {
 
-        Id: $("#Id").val() || 0,
+        Cedula: $("#Id").val() || 0,
         IdOriginal: $("#IdOriginal").val(),
         Nombre: $("#Nombre").val(),
         Apellido1: $("#Apellido1").val(),
@@ -162,7 +162,7 @@ function editarPersona() {
 
                 let p = response.data;
 
-                $("#Id").val(p.id);
+                $("#Id").val(p.Cedula);
                 $("#IdOriginal").val(p.id);
                 $("#Nombre").val(p.nombre);
                 $("#Apellido1").val(p.apellido1);

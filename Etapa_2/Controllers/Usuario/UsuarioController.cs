@@ -72,7 +72,8 @@ namespace Usuario.Controllers
                 }
                 else
                 {
-                    personaExiste.Id = model.Id;
+                 
+                    personaExiste.Cedula = model.Cedula;
                     personaExiste.Nombre = model.Nombre;
                     personaExiste.Apellido1 = model.Apellido1;
                     personaExiste.Apellido2 = model.Apellido2;

@@ -14,6 +14,8 @@ public partial class PersonaFisica
 
     public int Tipo { get; set; }
 
+    public long Cedula {  get; set; }
+
     public string Nombre { get; set; } = null!;
 
     public string Apellido1 { get; set; } = null!;
