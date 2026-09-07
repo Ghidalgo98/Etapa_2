@@ -168,6 +168,40 @@
                 <input type="hidden" id="EsEdicion" value="0" />
                 <input type="hidden" id="IdOriginal" />
 
+                <ul class="nav nav-tabs" id="personaTabs">
+
+                    <li class="nav-item">
+
+                        <button class="nav-link active"
+                                data-bs-toggle="tab"
+                                data-bs-target="#datos">
+
+                            Datos Generales
+
+                        </button>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <button class="nav-link"
+                                data-bs-toggle="tab"
+                                data-bs-target="#contacto">
+
+                            Datos de Contacto
+
+                        </button>
+
+                    </li>
+
+                </ul>
+
+                <div class="tab-content mt-3">
+
+                    <div class="tab-pane fade show active"
+                         id="datos">
+
+
                 <div class="col-md-4 mb-3">
                     <label class="form-label">
                         Cédula
@@ -335,8 +369,79 @@
 
                 </div>
 
-            </div>
+           
+                </div>
 
+                <div class="tab-pane fade"
+                     id="contacto">
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            Dirección
+                        </label>
+
+                        <textarea class="form-control"
+                                  id="Direccion"
+                                  rows="3"></textarea>
+                    </div>
+
+                    <hr />
+
+                    <h6>Teléfonos</h6>
+
+                    <table class="table table-bordered"
+                           id="tblTelefonos">
+
+                        <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            id="btnAgregarTelefono">
+
+                        Agregar Teléfono
+
+                    </button>
+
+                    <hr />
+
+                    <h6>Correos</h6>
+
+                    <table class="table table-bordered"
+                           id="tblCorreos">
+
+                        <thead>
+                            <tr>
+                                <th>Correo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            id="btnAgregarCorreo">
+
+                        Agregar Correo
+
+                    </button>
+
+                    </div> 
+                       
+                </div> 
+                
+            </div> 
             <div class="modal-footer">
 
                 <button type="button"

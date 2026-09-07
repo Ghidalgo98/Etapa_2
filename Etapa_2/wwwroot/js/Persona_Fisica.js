@@ -3,6 +3,9 @@
     iniciarDataTable();
     iniciarSelect2();
 
+    let telefonos = [];
+    let correos = [];
+
     $("#btnNuevaPersona").on("click", function () {
         $("#Id").val("");
         limpiarFormulario();
@@ -18,6 +21,37 @@
     $(document).on("click", ".btnEliminar", eliminarPersona);
 
 });
+
+$("#btnAgregarTelefono").on(click(function () {
+
+    let numero = prompt("Ingrese el teléfono");
+
+    if (!numero)
+        return;
+
+    telefonos.push({
+        id: 0,
+        numero: numero
+    });
+
+    cargarTelefonos();
+}));
+
+$("#btnAgregarCorreo").on (click(function () {
+
+    let correo = prompt("Ingrese el correo");
+
+    if (!correo)
+        return;
+
+    correos.push({
+        id: 0,
+        correo: correo
+    });
+
+    cargarCorreos();
+}));
+
 
 function iniciarDataTable() {
 
@@ -90,6 +124,7 @@ function guardarPersona() {
 
         Estado: $("#Estado").is(":checked")
 
+
     };
     console.log("Valor del input oculto:", $("#Id").val());
     console.log(persona);
@@ -148,6 +183,7 @@ function guardarPersona() {
 }
 
 function editarPersona() {
+    
 
     let id = $(this).data("id");
 
@@ -156,13 +192,17 @@ function editarPersona() {
         type: "GET",
         data: { id: id },
 
+       
+
         success: function (response) {
 
             if (response.success) {
 
                 let p = response.data;
-
-                $("#Id").val(p.Cedula);
+               
+                $("#Id").val(p.cedula);
+                
+                $("#modalPersona").modal("show");
                 $("#IdOriginal").val(p.id);
                 $("#Nombre").val(p.nombre);
                 $("#Apellido1").val(p.apellido1);
@@ -215,6 +255,65 @@ function eliminarPersona() {
     });
 
 }
+
+function cargarTelefonos() {
+
+    let html = "";
+
+    telefonos.forEach((t, index) => {
+
+        html += `
+            <tr>
+                <td>${t.numero}</td>
+                <td>
+                    <button type="button"
+                            class="btn btn-danger btn-sm"
+                            onclick="eliminarTelefono(${index})">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>`;
+    });
+
+    $("#tblTelefonos tbody").html(html);
+}
+
+function eliminarTelefono(index) {
+
+    telefonos.splice(index, 1);
+
+    cargarTelefonos();
+}
+
+function cargarCorreos() {
+
+    let html = "";
+
+    correos.forEach((c, index) => {
+
+        html += `
+            <tr>
+                <td>${c.correo}</td>
+                <td>
+                    <button type="button"
+                            class="btn btn-danger btn-sm"
+                            onclick="eliminarCorreo(${index})">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>`;
+    });
+
+    $("#tblCorreos tbody").html(html);
+}
+
+function eliminarCorreo(index) {
+
+    correos.splice(index, 1);
+
+    cargarCorreos();
+}
+
 function limpiarFormulario() {
 
     $("#Id").val("");
