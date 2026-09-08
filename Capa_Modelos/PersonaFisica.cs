@@ -30,11 +30,16 @@ public partial class PersonaFisica
 
     public bool Estado { get; set; }
 
+   
+
     public virtual ICollection<Cliente> Clientes { get; set; } = new List<Cliente>();
 
     public virtual Nacionalidad NacionalidadNavigation { get; set; } = null!;
 
     public virtual ICollection<PersonaFisicaCorreo> PersonaFisicaCorreos { get; set; } = new List<PersonaFisicaCorreo>();
+
+    [NotMapped]
+    public List<string> Correos { get; set; } = new();
 
     public virtual SexoPersona SexoNavigation { get; set; } = null!;
 

@@ -1,4 +1,8 @@
-﻿$(function () {
+﻿
+let telefonos = [];
+let correos = [];
+
+$(function () {
 
     iniciarDataTable();
     iniciarSelect2();
@@ -22,7 +26,7 @@
 
 });
 
-$("#btnAgregarTelefono").on(click(function () {
+$("#btnAgregarTelefono").on("click", function () {
 
     let numero = prompt("Ingrese el teléfono");
 
@@ -35,9 +39,10 @@ $("#btnAgregarTelefono").on(click(function () {
     });
 
     cargarTelefonos();
-}));
+});
 
-$("#btnAgregarCorreo").on (click(function () {
+
+$("#btnAgregarCorreo").on("click", function () {
 
     let correo = prompt("Ingrese el correo");
 
@@ -50,7 +55,7 @@ $("#btnAgregarCorreo").on (click(function () {
     });
 
     cargarCorreos();
-}));
+});
 
 
 function iniciarDataTable() {
@@ -122,12 +127,12 @@ function guardarPersona() {
         Nacionalidad: parseInt($("#Nacionalidad").val()),
         Tipo: parseInt($("#TipoPersona").val()),
 
-        Estado: $("#Estado").is(":checked")
-
+        Estado: $("#Estado").is(":checked"),
+        Correos: correos.map(c => c.correo)
 
     };
-    console.log("Valor del input oculto:", $("#Id").val());
-    console.log(persona);
+    console.log("Correos:", correos);
+    console.log("Persona:", persona);
 
     $.ajax({
 

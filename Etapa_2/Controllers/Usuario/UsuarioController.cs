@@ -63,16 +63,54 @@ namespace Usuario.Controllers
                     });
                     
                 }
+                if (model.Correos != null)
+                {
+                    Console.WriteLine("Entró a guardar correos");
+                    Console.WriteLine($"Cantidad de Correos: {model.Correos.Count}");
+
+                    foreach (var correo in model.Correos)
+                    {
+                        Console.WriteLine($"Correo recibido: {correo}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Correos viene NULL");
+                }
+
                 var personaExiste = await _context.PersonaFisicas
     .FirstOrDefaultAsync(x => x.Id == model.IdOriginal);
 
                 if (personaExiste == null)
                 {
                     _context.PersonaFisicas.Add(model);
+
+                    await _context.SaveChangesAsync();
+
+                    foreach (var email in model.Correos)
+                    {
+                        Console.WriteLine($"Guardando correo: {email}");
+                        var correo = new Correo
+                        {
+                            DescripcionCorreoPersona = email,
+                            Estado = true
+                        };
+
+                        _context.Correos.Add(correo);
+                        await _context.SaveChangesAsync();
+
+                        _context.PersonaFisicaCorreos.Add(
+                            new PersonaFisicaCorreo
+                            {
+                                PersonaFisicaId = model.Id,
+                                CorreoIdCorreo = correo.IdCorreo
+                            });
+                    }
+
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
-                 
                     personaExiste.Cedula = model.Cedula;
                     personaExiste.Nombre = model.Nombre;
                     personaExiste.Apellido1 = model.Apellido1;
@@ -82,26 +120,55 @@ namespace Usuario.Controllers
                     personaExiste.Nacionalidad = model.Nacionalidad;
                     personaExiste.Tipo = model.Tipo;
                     personaExiste.Estado = model.Estado;
-                }
 
+                    var relaciones = await _context.PersonaFisicaCorreos
+                        .Where(x => x.PersonaFisicaId == personaExiste.Id)
+                        .ToListAsync();
 
-                var resultado = await _context.SaveChangesAsync();
+                    var idsCorreos = relaciones
+                        .Select(x => x.CorreoIdCorreo)
+                        .ToList();
 
-                if (resultado > 0)
-                {
-                    return Json(new
+                    _context.PersonaFisicaCorreos.RemoveRange(relaciones);
+
+                    var correosViejos = await _context.Correos
+                        .Where(x => idsCorreos.Contains(x.IdCorreo))
+                        .ToListAsync();
+
+                    _context.Correos.RemoveRange(correosViejos);
+
+                    await _context.SaveChangesAsync();
+
+                    foreach (var email in model.Correos)
                     {
-                        success = true,
-                        message = personaExiste==null
-                            ? "Persona registrada correctamente."
-                            : "Persona actualizada correctamente."
-                    });
+                        var correo = new Correo
+                        {
+                            DescripcionCorreoPersona = email,
+                            Estado = true
+                        };
+
+                        _context.Correos.Add(correo);
+                        await _context.SaveChangesAsync();
+
+                        _context.PersonaFisicaCorreos.Add(
+                            new PersonaFisicaCorreo
+                            {
+                                PersonaFisicaId = personaExiste.Id,
+                                CorreoIdCorreo = correo.IdCorreo
+                            });
+                    }
+
+                    await _context.SaveChangesAsync();
                 }
+
 
                 return Json(new
                 {
-                    success = false,
-                    message = "No se realizaron cambios."
+                    success = true,
+                    message = personaExiste == null
+                    ?"Persona registrada correctamente."
+                    :"Persona actualizada correctamente."
+
                 });
             }
             catch (Exception ex)
