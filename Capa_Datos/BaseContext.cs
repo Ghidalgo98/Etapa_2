@@ -351,7 +351,7 @@ public partial class BaseContext : DbContext
             entity.ToTable("correo");
 
             entity.Property(e => e.IdCorreo)
-                .ValueGeneratedNever()
+             .ValueGeneratedOnAdd()
                 .HasColumnName("ID_Correo");
             entity.Property(e => e.DescripcionCorreoPersona)
                 .HasMaxLength(100)

@@ -86,6 +86,7 @@ namespace Usuario.Controllers
                     _context.PersonaFisicas.Add(model);
 
                     await _context.SaveChangesAsync();
+                    Console.WriteLine($"ID generado: {model.Id}");
 
                     foreach (var email in model.Correos)
                     {
@@ -98,7 +99,10 @@ namespace Usuario.Controllers
 
                         _context.Correos.Add(correo);
                         await _context.SaveChangesAsync();
+                        Console.WriteLine($"ID PERSONA GENERADO: {model.Id}");
+                        Console.WriteLine($"ID CORREO GENERADO: {correo.IdCorreo}");
 
+                        Console.WriteLine($"Relacionando Persona {model.Id} con Correo {correo.IdCorreo}");
                         _context.PersonaFisicaCorreos.Add(
                             new PersonaFisicaCorreo
                             {
@@ -149,6 +153,12 @@ namespace Usuario.Controllers
 
                         _context.Correos.Add(correo);
                         await _context.SaveChangesAsync();
+                        Console.WriteLine($"ID CORREO = {correo.IdCorreo}");
+                        Console.WriteLine($"Persona ID: {model.Id}");
+                        Console.WriteLine($"Correo ID: {correo.IdCorreo}");
+                        Console.WriteLine($"Correo generado: {correo.IdCorreo}");
+                        var existeCorreo = await _context.Correos.AnyAsync(x => x.IdCorreo == correo.IdCorreo);
+                        Console.WriteLine($"Existe correo: {existeCorreo}");
 
                         _context.PersonaFisicaCorreos.Add(
                             new PersonaFisicaCorreo
