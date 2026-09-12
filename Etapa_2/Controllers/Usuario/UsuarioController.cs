@@ -34,63 +34,49 @@ namespace Usuario.Controllers
             }
         }
 
-        
+
 
         // POST: Usuario/Guardar
         [HttpPost]
         public async Task<IActionResult> Guardar(PersonaFisica model)
         {
-            Console.WriteLine($"ID nuevo: {model.Id}");
-            Console.WriteLine($"ID original: {model.IdOriginal}");
-            Console.WriteLine($"ID recibido: {model.Id}");
             ModelState.Remove("SexoNavigation");
-            
             ModelState.Remove("TipoNavigation");
-            
             ModelState.Remove("NacionalidadNavigation");
+
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    var errores=ModelState.Values
-                        .SelectMany(v=> v.Errors)
-                        .Select(e=> e.ErrorMessage).ToList();
+                    var errores = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
                     return Json(new
                     {
-                        success = false,message=string.Join("|", errores)
-
-
+                        success = false,
+                        message = string.Join("|", errores)
                     });
-                    
                 }
-                if (model.Correos != null)
-                {
-                    Console.WriteLine("Entró a guardar correos");
-                    Console.WriteLine($"Cantidad de Correos: {model.Correos.Count}");
 
-                    foreach (var correo in model.Correos)
-                    {
-                        Console.WriteLine($"Correo recibido: {correo}");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Correos viene NULL");
-                }
+                model.Correos ??= new List<string>();
+
+                using var transaction = await _context.Database.BeginTransactionAsync();
 
                 var personaExiste = await _context.PersonaFisicas
-    .FirstOrDefaultAsync(x => x.Id == model.IdOriginal);
+                    .FirstOrDefaultAsync(x => x.Id == model.IdOriginal);
 
                 if (personaExiste == null)
                 {
+                    // Nueva persona
                     _context.PersonaFisicas.Add(model);
+                    await _context.SaveChangesAsync(); // EF asigna el Id
 
-                    await _context.SaveChangesAsync();
-                    Console.WriteLine($"ID generado: {model.Id}");
+                    var personaId = model.Id;
 
                     foreach (var email in model.Correos)
                     {
-                        Console.WriteLine($"Guardando correo: {email}");
                         var correo = new Correo
                         {
                             DescripcionCorreoPersona = email,
@@ -99,22 +85,17 @@ namespace Usuario.Controllers
 
                         _context.Correos.Add(correo);
                         await _context.SaveChangesAsync();
-                        Console.WriteLine($"ID PERSONA GENERADO: {model.Id}");
-                        Console.WriteLine($"ID CORREO GENERADO: {correo.IdCorreo}");
 
-                        Console.WriteLine($"Relacionando Persona {model.Id} con Correo {correo.IdCorreo}");
-                        _context.PersonaFisicaCorreos.Add(
-                            new PersonaFisicaCorreo
-                            {
-                                PersonaFisicaId = model.Id,
-                                CorreoIdCorreo = correo.IdCorreo
-                            });
+                        _context.PersonaFisicaCorreos.Add(new PersonaFisicaCorreo
+                        {
+                            PersonaFisicaId = personaId,       // usar el Id ya generado
+                            CorreoIdCorreo = correo.IdCorreo   // usar el Id del correo
+                        });
                     }
-
-                    await _context.SaveChangesAsync();
                 }
                 else
                 {
+                    // Actualización
                     personaExiste.Cedula = model.Cedula;
                     personaExiste.Nombre = model.Nombre;
                     personaExiste.Apellido1 = model.Apellido1;
@@ -125,13 +106,12 @@ namespace Usuario.Controllers
                     personaExiste.Tipo = model.Tipo;
                     personaExiste.Estado = model.Estado;
 
+                    // Eliminar relaciones y correos anteriores
                     var relaciones = await _context.PersonaFisicaCorreos
                         .Where(x => x.PersonaFisicaId == personaExiste.Id)
                         .ToListAsync();
 
-                    var idsCorreos = relaciones
-                        .Select(x => x.CorreoIdCorreo)
-                        .ToList();
+                    var idsCorreos = relaciones.Select(x => x.CorreoIdCorreo).ToList();
 
                     _context.PersonaFisicaCorreos.RemoveRange(relaciones);
 
@@ -143,6 +123,7 @@ namespace Usuario.Controllers
 
                     await _context.SaveChangesAsync();
 
+                    // Insertar nuevos correos
                     foreach (var email in model.Correos)
                     {
                         var correo = new Correo
@@ -153,32 +134,24 @@ namespace Usuario.Controllers
 
                         _context.Correos.Add(correo);
                         await _context.SaveChangesAsync();
-                        Console.WriteLine($"ID CORREO = {correo.IdCorreo}");
-                        Console.WriteLine($"Persona ID: {model.Id}");
-                        Console.WriteLine($"Correo ID: {correo.IdCorreo}");
-                        Console.WriteLine($"Correo generado: {correo.IdCorreo}");
-                        var existeCorreo = await _context.Correos.AnyAsync(x => x.IdCorreo == correo.IdCorreo);
-                        Console.WriteLine($"Existe correo: {existeCorreo}");
 
-                        _context.PersonaFisicaCorreos.Add(
-                            new PersonaFisicaCorreo
-                            {
-                                PersonaFisicaId = personaExiste.Id,
-                                CorreoIdCorreo = correo.IdCorreo
-                            });
+                        _context.PersonaFisicaCorreos.Add(new PersonaFisicaCorreo
+                        {
+                            PersonaFisicaId = personaExiste.Id, // usar el Id real
+                            CorreoIdCorreo = correo.IdCorreo
+                        });
                     }
-
-                    await _context.SaveChangesAsync();
                 }
 
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
                 return Json(new
                 {
                     success = true,
                     message = personaExiste == null
-                    ?"Persona registrada correctamente."
-                    :"Persona actualizada correctamente."
-
+                        ? "Persona registrada correctamente."
+                        : "Persona actualizada correctamente."
                 });
             }
             catch (Exception ex)
@@ -190,6 +163,8 @@ namespace Usuario.Controllers
                 });
             }
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Obtener(int id)

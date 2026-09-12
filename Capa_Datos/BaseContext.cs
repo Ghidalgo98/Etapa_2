@@ -774,7 +774,7 @@ public partial class BaseContext : DbContext
             entity.HasIndex(e => e.Tipo, "FK_Persona Fisica_Tipo_Persona_Fisica");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .ValueGeneratedOnAdd()
                 .HasColumnName("ID");
             entity.Property(e => e.Apellido1).HasMaxLength(100);
             entity.Property(e => e.Apellido2).HasMaxLength(100);
@@ -799,7 +799,7 @@ public partial class BaseContext : DbContext
 
         modelBuilder.Entity<PersonaFisicaCorreo>(entity =>
         {
-            entity.HasKey(e => e.CorreoIdCorreo).HasName("PRIMARY");
+            entity.HasKey(e => new { e.PersonaFisicaId, e.CorreoIdCorreo });
 
             entity.ToTable("persona_fisica-correo");
 
