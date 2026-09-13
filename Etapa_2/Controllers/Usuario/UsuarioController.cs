@@ -166,12 +166,17 @@ namespace Usuario.Controllers
 
 
 
-        [HttpGet]
+        //Obtener
+
         public async Task<IActionResult> Obtener(int id)
         {
             try
             {
                 var persona = await _context.PersonaFisicas
+                    .Include(p => p.PersonaFisicaCorreos)
+                        .ThenInclude(pc => pc.CorreoIdCorreoNavigation)
+                    //.Include(p => p.PersonaFisicaTelefonos)
+                        //.ThenInclude(pt => pt.TelefonoIdTelefonoNavigation)
                     .FirstOrDefaultAsync(x => x.Id == id);
 
                 if (persona == null)
@@ -183,10 +188,42 @@ namespace Usuario.Controllers
                     });
                 }
 
+                // Proyección de correos
+                var correos = persona.PersonaFisicaCorreos
+                    .Select(pc => new
+                    {
+                        correoIdCorreo = pc.CorreoIdCorreo,
+                        descripcionCorreoPersona = pc.CorreoIdCorreoNavigation.DescripcionCorreoPersona
+                    })
+                    .ToList();
+
+                // Proyección de teléfonos
+               /* var telefonos = persona.PersonaFisicaTelefonos
+                    .Select(pt => new
+                    {
+                        telefonoIdTelefono = pt.TelefonoIdTelefono,
+                        numeroTelefonoPersona = pt.TelefonoIdTelefonoNavigation.NumeroTelefonoPersona
+                    })
+                    .ToList();*/
+
                 return Json(new
                 {
                     success = true,
-                    data = persona
+                    data = new
+                    {
+                        persona.Id,
+                        persona.Cedula,
+                        persona.Nombre,
+                        persona.Apellido1,
+                        persona.Apellido2,
+                        persona.FechaNacimiento,
+                        persona.Sexo,
+                        persona.Nacionalidad,
+                        persona.Tipo,
+                        persona.Estado,
+                        correos,
+                       // telefonos
+                    }
                 });
             }
             catch (Exception ex)
@@ -194,10 +231,12 @@ namespace Usuario.Controllers
                 return Json(new
                 {
                     success = false,
-                    message = ex.ToString()
+                    message = ex.InnerException?.Message ?? ex.Message
                 });
             }
         }
+
+
 
         // GET: Usuario/Delete/5
         [HttpGet]

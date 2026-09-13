@@ -188,55 +188,86 @@ function guardarPersona() {
 }
 
 function editarPersona() {
-    
-
     let id = $(this).data("id");
 
     $.ajax({
         url: "/Usuario/Obtener",
         type: "GET",
         data: { id: id },
-
-       
-
         success: function (response) {
-
             if (response.success) {
-
                 let p = response.data;
-               
+
+                // --- Datos generales ---
                 $("#Id").val(p.cedula);
-                
-                $("#modalPersona").modal("show");
                 $("#IdOriginal").val(p.id);
                 $("#Nombre").val(p.nombre);
                 $("#Apellido1").val(p.apellido1);
                 $("#Apellido2").val(p.apellido2);
-
-                $("#FechaNacimiento").val(
-                    p.fechaNacimiento.split('T')[0]
-                );
-
+                $("#FechaNacimiento").val(p.fechaNacimiento.split('T')[0]);
                 $("#Sexo").val(p.sexo).trigger("change");
                 $("#Nacionalidad").val(p.nacionalidad).trigger("change");
                 $("#TipoPersona").val(p.tipo).trigger("change");
-
                 $("#Estado").prop("checked", p.estado);
 
-                $("#modalPersona").modal("show");
-            }
-            else {
+                // --- Correos ---
+                let tbodyCorreos = $("#tblCorreos tbody");
+                tbodyCorreos.empty();
 
+                if (p.correos && p.correos.length > 0) {
+                    p.correos.forEach(c => {
+                        tbodyCorreos.append(`
+                            <tr>
+                                <td>${c.descripcionCorreoPersona}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" onclick="editarCorreo(${c.correoIdCorreo})">Editar</button>
+                                    <button class="btn btn-danger btn-sm" onclick="eliminarCorreo(${c.correoIdCorreo})">Eliminar</button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                } else {
+                    tbodyCorreos.append(`<tr><td colspan="2">No hay correos registrados</td></tr>`);
+                }
+
+                // --- Teléfonos ---
+                let tbodyTel = $("#tblTelefonos tbody");
+                tbodyTel.empty();
+
+                if (p.telefonos && p.telefonos.length > 0) {
+                    p.telefonos.forEach(t => {
+                        tbodyTel.append(`
+                            <tr>
+                                <td>${t.numeroTelefonoPersona}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm" onclick="eliminarTelefono(${t.telefonoIdTelefono})">Eliminar</button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                } else {
+                    tbodyTel.append(`<tr><td colspan="2">No hay teléfonos registrados</td></tr>`);
+                }
+
+                // Mostrar modal
+                $("#modalPersona").modal("show");
+            } else {
                 Swal.fire({
                     icon: "error",
                     title: "Error",
                     text: response.message
                 });
             }
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "No se pudo consultar la persona: " + error
+            });
         }
     });
 }
-
 
 function eliminarPersona() {
 
