@@ -107,7 +107,7 @@ function iniciarDataTable() {
         responsive: true,
         pageLength: 10,
         ajax: {
-            url: "/Usuario/Listar",   // 👈 tu acción que devuelve JSON
+            url: "/Persona_Fisica/Listar",   // 👈 tu acción que devuelve JSON
             type: "GET",
             dataSrc: "data"
         },
@@ -163,7 +163,7 @@ function guardarPersona() {
     };
 
     $.ajax({
-        url: "/Usuario/Guardar",
+        url: "/Persona_Fisica/Guardar",
         type: "POST",
         data: persona,
         success: function (response) {
@@ -189,7 +189,7 @@ function guardarPersona() {
 function editarPersona() {
     let id = $(this).data("id");
     $.ajax({
-        url: "/Usuario/Obtener",
+        url: "/Persona_Fisica/Obtener",
         type: "GET",
         data: { id: id },
         success: function (response) {
@@ -241,7 +241,7 @@ function eliminarPersona(id) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/Usuario/Eliminar",
+                url: "/Persona_Fisica/Eliminar",
                 type: "POST",
                
                 data: { id: id },//JSON SIMPLE: form-unlencoled

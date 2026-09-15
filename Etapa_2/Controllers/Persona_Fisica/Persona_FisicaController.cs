@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Usuario.Controllers
 {
-    public class UsuarioController : Controller
+    public class Persona_FisicaController : Controller
     {
         private readonly BaseContext _context;
 
-        public UsuarioController(BaseContext context)
+        public Persona_FisicaController(BaseContext context)
         {
             _context = context;
         }
