@@ -164,6 +164,24 @@ namespace Usuario.Controllers
             }
         }
 
+        [HttpGet]
+        public JsonResult Listar()
+        {
+            var personas = _context.PersonaFisicas.Select(p => new {
+                id = p.Id,
+                cedula = p.Cedula,
+                nombreCompleto = p.Nombre + " " + p.Apellido1 + " " + p.Apellido2,
+                fechaNacimiento = p.FechaNacimiento.ToString("dd/MM/yyyy"),
+                sexo = p.Sexo,
+                nacionalidad = p.Nacionalidad,
+                estado = p.Estado ? "Activo" : "Inactivo",
+                acciones = $"<button class='btn btn-warning btn-sm btnEditar' data-id='{p.Id}'>Editar</button>"
+                           + $" <button class='btn btn-danger btn-sm btnEliminar' data-id='{p.Id}'>Eliminar</button>"
+            }).ToList();
+
+            return Json(new { data = personas });
+        }
+
 
 
         //Obtener
