@@ -256,9 +256,10 @@ namespace Usuario.Controllers
 
 
 
-        // GET: Usuario/Delete/5
-        [HttpGet]
-        public async Task<IActionResult> Delete(long id)
+        // POST: Usuario/Delete/5
+
+        [HttpPost]
+        public async Task<JsonResult> Eliminar(long id)
         {
             try
             {
@@ -267,25 +268,32 @@ namespace Usuario.Controllers
 
                 if (persona == null)
                 {
-                    TempData["Error"] = "Registro no encontrado.";
-                    return RedirectToAction(nameof(Index));
+                    return Json(new { success = false, message = "Registro no encontrado." });
                 }
 
                 _context.PersonaFisicas.Remove(persona);
-
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = "Registro eliminado correctamente.";
-
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Registro eliminado correctamente." });
             }
-            catch (Exception ex)
+            catch (DbUpdateException) // 👈 específico para errores de FK
             {
-                TempData["Error"] = ex.InnerException?.Message ?? ex.Message;
-
-                return RedirectToAction(nameof(Index));
+                return Json(new
+                {
+                    success = false,
+                    message = "No se puede eliminar la persona porque tiene correos, teléfonos u otros datos asociados. Elimine primero esos registros."
+                });
+            }
+            catch (Exception)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Ocurrió un error inesperado al intentar eliminar."
+                });
             }
         }
+
 
 
 

@@ -30,7 +30,11 @@ $(function () {
 
     // Editar / Eliminar persona
     $(document).on("click", ".btnEditar", editarPersona);
-    $(document).on("click", ".btnEliminar", eliminarPersona);
+    $(document).on("click", ".btnEliminar", function () {
+        let id = $(this).data("id"); // 👈 aquí obtienes el número
+        eliminarPersona(id);         // 👈 ahora sí pasas el número
+
+    });
 });
 
 // --- Teléfonos ---
@@ -226,21 +230,45 @@ function editarPersona() {
 }
 
 // --- Eliminar Persona ---
-function eliminarPersona() {
-    let id = $(this).data("id");
+function eliminarPersona(id) {
     Swal.fire({
-        title: "Eliminar registro",
-        text: "¿Está seguro de eliminar esta persona?",
+        title: "¿Está seguro?",
+        text: "Esta acción eliminará la persona seleccionada.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Sí, eliminar",
         cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = "/Usuario/Delete/" + id;
+            $.ajax({
+                url: "/Usuario/Eliminar",
+                type: "POST",
+               
+                data: { id: id },//JSON SIMPLE: form-unlencoled
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({ icon: "success", title: "Éxito", text: response.message });
+                        $("#tablaPersonas").DataTable().ajax.reload();
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "No se puede eliminar",
+                            text: response.message
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Ocurrió un error inesperado al intentar eliminar."
+                    });
+                }
+            });
         }
     });
 }
+
 
 // --- Limpiar Formulario ---
 function limpiarFormulario() {
