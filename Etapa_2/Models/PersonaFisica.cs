@@ -1,0 +1,39 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace Etapa_1.Models;
+
+public partial class PersonaFisica
+{
+    public long Id { get; set; }
+
+    public int Tipo { get; set; }
+
+    public long Cedula { get; set; }
+
+    public string Nombre { get; set; } = null!;
+
+    public string Apellido1 { get; set; } = null!;
+
+    public string Apellido2 { get; set; } = null!;
+
+    public DateOnly FechaNacimiento { get; set; }
+
+    public int Sexo { get; set; }
+
+    public int Nacionalidad { get; set; }
+
+    public bool Estado { get; set; }
+
+    public virtual ICollection<Cliente> Clientes { get; set; } = new List<Cliente>();
+
+    public virtual Nacionalidad NacionalidadNavigation { get; set; } = null!;
+
+    public virtual ICollection<PersonaFisicaCorreo> PersonaFisicaCorreos { get; set; } = new List<PersonaFisicaCorreo>();
+
+    public virtual SexoPersona SexoNavigation { get; set; } = null!;
+
+    public virtual TipoPersonaFisica TipoNavigation { get; set; } = null!;
+
+    public virtual Usuario? Usuario { get; set; }
+}
