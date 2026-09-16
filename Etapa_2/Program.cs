@@ -2,6 +2,7 @@ using Capa_Datos;
 using Capa_Logica;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 //Configuracion del DB Context MySQL
 
 
-builder.Services.AddDbContext<BaseContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("CadenaMySQL"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("CadenaMySQL"))));
+builder.Services.AddDbContext<BaseContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("CadenaMysql"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("CadenaMysql"))
+    )
+);
+
 
 
 

@@ -14,4 +14,6 @@ public partial class Pai
     public virtual ICollection<Direccion> Direccions { get; set; } = new List<Direccion>();
 
     public virtual ICollection<PersonaJuridica> PersonaJuridicas { get; set; } = new List<PersonaJuridica>();
+
+    public virtual ICollection<Provincium> Provincia { get; set; } = new List<Provincium>();
 }

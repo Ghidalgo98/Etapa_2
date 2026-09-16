@@ -120,8 +120,15 @@ public partial class BaseContext : DbContext
     public virtual DbSet<UsuarioEmpleado> UsuarioEmpleados { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-
-        => optionsBuilder.UseMySql("server=winsvr-pruebas;user=gjhidalgo;password=Abc123456;database=base", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.46-mysql"));
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseMySql(
+                "Name=CadenaMysql",
+                new MySqlServerVersion(new Version(8, 0, 46))
+            );
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

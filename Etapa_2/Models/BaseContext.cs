@@ -209,17 +209,26 @@ public partial class BaseContext : DbContext
 
         modelBuilder.Entity<Canton>(entity =>
         {
-            entity.HasKey(e => e.IdCantón).HasName("PRIMARY");
+            entity.HasKey(e => new { e.IdCantón, e.ProvinciaIdProvincia, e.ProvinciaPaisIdPais })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
 
             entity.ToTable("canton");
 
-            entity.Property(e => e.IdCantón)
-                .ValueGeneratedNever()
-                .HasColumnName("Id_Cantón");
+            entity.HasIndex(e => new { e.ProvinciaIdProvincia, e.ProvinciaPaisIdPais }, "fk_canton_provincia1_idx");
+
+            entity.Property(e => e.IdCantón).HasColumnName("Id_Cantón");
+            entity.Property(e => e.ProvinciaIdProvincia).HasColumnName("provincia_ID_Provincia");
+            entity.Property(e => e.ProvinciaPaisIdPais).HasColumnName("provincia_pais_ID_Pais");
             entity.Property(e => e.DescripciónCanton)
                 .HasMaxLength(100)
                 .HasColumnName("Descripción_Canton");
             entity.Property(e => e.Estado).HasMaxLength(100);
+
+            entity.HasOne(d => d.Provincium).WithMany(p => p.Cantons)
+                .HasForeignKey(d => new { d.ProvinciaIdProvincia, d.ProvinciaPaisIdPais })
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_canton_provincia1");
         });
 
         modelBuilder.Entity<CategoriaProducto>(entity =>
@@ -472,16 +481,6 @@ public partial class BaseContext : DbContext
                 .HasColumnName("ID_Direccion");
             entity.Property(e => e.IdPersonaDireccion).HasColumnName("ID_Persona_Direccion");
 
-            entity.HasOne(d => d.CantonNavigation).WithMany(p => p.Direccions)
-                .HasForeignKey(d => d.Canton)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Direccion_Canton");
-
-            entity.HasOne(d => d.DistritoNavigation).WithMany(p => p.Direccions)
-                .HasForeignKey(d => d.Distrito)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Direccion_Distrito");
-
             entity.HasOne(d => d.IdPersonaDireccionNavigation).WithMany(p => p.Direccions)
                 .HasForeignKey(d => d.IdPersonaDireccion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -491,25 +490,32 @@ public partial class BaseContext : DbContext
                 .HasForeignKey(d => d.Pais)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Direccion_Pais");
-
-            entity.HasOne(d => d.ProvinciaNavigation).WithMany(p => p.Direccions)
-                .HasForeignKey(d => d.Provincia)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Direccion_Provincia");
         });
 
         modelBuilder.Entity<Distrito>(entity =>
         {
-            entity.HasKey(e => e.IdDistrito).HasName("PRIMARY");
+            entity.HasKey(e => new { e.IdDistrito, e.CantonIdCantón, e.CantonProvinciaIdProvincia, e.CantonProvinciaPaisIdPais })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0, 0 });
 
             entity.ToTable("distrito");
 
+            entity.HasIndex(e => new { e.CantonIdCantón, e.CantonProvinciaIdProvincia, e.CantonProvinciaPaisIdPais }, "fk_distrito_canton1_idx");
+
             entity.Property(e => e.IdDistrito)
-                .ValueGeneratedNever()
+                .ValueGeneratedOnAdd()
                 .HasColumnName("ID_Distrito");
+            entity.Property(e => e.CantonIdCantón).HasColumnName("canton_Id_Cantón");
+            entity.Property(e => e.CantonProvinciaIdProvincia).HasColumnName("canton_provincia_ID_Provincia");
+            entity.Property(e => e.CantonProvinciaPaisIdPais).HasColumnName("canton_provincia_pais_ID_Pais");
             entity.Property(e => e.DescripcionDistrito)
                 .HasMaxLength(100)
                 .HasColumnName("Descripcion_Distrito");
+
+            entity.HasOne(d => d.Canton).WithMany(p => p.Distritos)
+                .HasForeignKey(d => new { d.CantonIdCantón, d.CantonProvinciaIdProvincia, d.CantonProvinciaPaisIdPais })
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_distrito_canton1");
         });
 
         modelBuilder.Entity<Empleado>(entity =>
@@ -971,16 +977,24 @@ public partial class BaseContext : DbContext
 
         modelBuilder.Entity<Provincium>(entity =>
         {
-            entity.HasKey(e => e.IdProvincia).HasName("PRIMARY");
+            entity.HasKey(e => new { e.IdProvincia, e.PaisIdPais })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
             entity.ToTable("provincia");
 
-            entity.Property(e => e.IdProvincia)
-                .ValueGeneratedNever()
-                .HasColumnName("ID_Provincia");
+            entity.HasIndex(e => e.PaisIdPais, "fk_provincia_pais1_idx");
+
+            entity.Property(e => e.IdProvincia).HasColumnName("ID_Provincia");
+            entity.Property(e => e.PaisIdPais).HasColumnName("pais_ID_Pais");
             entity.Property(e => e.DescripcionProvincia)
                 .HasMaxLength(100)
                 .HasColumnName("Descripcion_Provincia");
+
+            entity.HasOne(d => d.PaisIdPaisNavigation).WithMany(p => p.Provincia)
+                .HasForeignKey(d => d.PaisIdPais)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_provincia_pais1");
         });
 
         modelBuilder.Entity<Puesto>(entity =>

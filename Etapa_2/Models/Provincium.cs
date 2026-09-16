@@ -11,5 +11,9 @@ public partial class Provincium
 
     public bool Estado { get; set; }
 
-    public virtual ICollection<Direccion> Direccions { get; set; } = new List<Direccion>();
+    public int PaisIdPais { get; set; }
+
+    public virtual ICollection<Canton> Cantons { get; set; } = new List<Canton>();
+
+    public virtual Pai PaisIdPaisNavigation { get; set; } = null!;
 }
