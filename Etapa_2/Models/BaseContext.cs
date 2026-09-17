@@ -696,7 +696,9 @@ public partial class BaseContext : DbContext
 
             entity.HasIndex(e => e.PaisIdPais, "fk_nacionalidad_pais1_idx");
 
-            entity.Property(e => e.IdNacionalidad).HasColumnName("ID_Nacionalidad");
+            entity.Property(e => e.IdNacionalidad)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("ID_Nacionalidad");
             entity.Property(e => e.PaisIdPais).HasColumnName("pais_ID_Pais");
             entity.Property(e => e.DescripcionNacionalidad)
                 .HasMaxLength(100)
