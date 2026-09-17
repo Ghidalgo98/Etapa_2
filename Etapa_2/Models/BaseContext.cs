@@ -121,7 +121,6 @@ public partial class BaseContext : DbContext
     public virtual DbSet<UsuarioEmpleado> UsuarioEmpleados { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseMySql("server=winsvr-pruebas;user=gjhidalgo;password=Abc123456;database=base", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.46-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -689,16 +688,24 @@ public partial class BaseContext : DbContext
 
         modelBuilder.Entity<Nacionalidad>(entity =>
         {
-            entity.HasKey(e => e.IdNacionalidad).HasName("PRIMARY");
+            entity.HasKey(e => new { e.IdNacionalidad, e.PaisIdPais })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
             entity.ToTable("nacionalidad");
 
-            entity.Property(e => e.IdNacionalidad)
-                .ValueGeneratedNever()
-                .HasColumnName("ID_Nacionalidad");
+            entity.HasIndex(e => e.PaisIdPais, "fk_nacionalidad_pais1_idx");
+
+            entity.Property(e => e.IdNacionalidad).HasColumnName("ID_Nacionalidad");
+            entity.Property(e => e.PaisIdPais).HasColumnName("pais_ID_Pais");
             entity.Property(e => e.DescripcionNacionalidad)
                 .HasMaxLength(100)
-                .HasColumnName("Descripcion_Nacionalidad]");
+                .HasColumnName("Descripcion_Nacionalidad");
+
+            entity.HasOne(d => d.PaisIdPaisNavigation).WithMany(p => p.Nacionalidads)
+                .HasForeignKey(d => d.PaisIdPais)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_nacionalidad_pais1");
         });
 
         modelBuilder.Entity<PagoFactura>(entity =>
@@ -781,11 +788,6 @@ public partial class BaseContext : DbContext
             entity.Property(e => e.Apellido2).HasMaxLength(100);
             entity.Property(e => e.FechaNacimiento).HasColumnName("Fecha_Nacimiento");
             entity.Property(e => e.Nombre).HasMaxLength(45);
-
-            entity.HasOne(d => d.NacionalidadNavigation).WithMany(p => p.PersonaFisicas)
-                .HasForeignKey(d => d.Nacionalidad)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Persona Fisica_Nacionalidad");
 
             entity.HasOne(d => d.SexoNavigation).WithMany(p => p.PersonaFisicas)
                 .HasForeignKey(d => d.Sexo)

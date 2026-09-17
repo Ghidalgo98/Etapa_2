@@ -7,9 +7,11 @@ public partial class Nacionalidad
 {
     public int IdNacionalidad { get; set; }
 
+    public int PaisIdPais { get; set; }
+
     public string DescripcionNacionalidad { get; set; } = null!;
 
     public bool Estado { get; set; }
 
-    public virtual ICollection<PersonaFisica> PersonaFisicas { get; set; } = new List<PersonaFisica>();
+    public virtual Pai PaisIdPaisNavigation { get; set; } = null!;
 }
